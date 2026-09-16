@@ -1,5 +1,7 @@
 # DoM Key Math
 
+Live: https://dom-key-math.vercel.app
+
 Expected value calculator for Axie: Den of Mysteries 2.0 on Ronin.
 
 Every formula comes from the official whitepaper. Single HTML file,
