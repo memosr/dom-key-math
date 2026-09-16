@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DoM Key Math</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --den:#0B1611; --floor:#111F19; --wall:#1B2E25; --edge:#243B30;
+  --ink:#DFEAE2; --dim:#849A8C; --faint:#5A7267;
+  --gold:#F2B33D; --mint:#5BE9C0; --rose:#F26BC8; --dev:#4C6459;
+  --focus:#5BE9C0;
+}
+:root:not([data-theme="light"]){color-scheme:dark}
+@media (prefers-color-scheme: dark){:root{--den:#0B1611}}
+:root[data-theme="dark"]{--den:#0B1611}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--den); color:var(--ink);
+  font-family:Archivo, "Helvetica Neue", Arial, sans-serif;
+  font-size:16px; line-height:1.55;
+  background-image:
+    linear-gradient(rgba(91,233,192,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,233,192,.022) 1px, transparent 1px);
+  background-size:32px 32px;
+}
+.wrap{max-width:900px; margin:0 auto; padding:0 20px 90px}
+
+/* ---------- masthead ---------- */
+header{padding:52px 0 14px}
+.mark{
+  font-family:Silkscreen, monospace; font-size:11px; letter-spacing:.06em;
+  color:var(--faint); margin-bottom:26px;
+}
+h1{
+  font-family:Silkscreen, monospace; font-weight:700;
+  font-size:clamp(30px,6.4vw,54px); line-height:1.06; margin:0 0 18px;
+  color:var(--ink);
+}
+.standfirst{font-size:17px; color:var(--dim); max-width:60ch; margin:0 0 8px}
+.standfirst b{color:var(--ink); font-weight:600}
+
+/* ---------- panels ---------- */
+section{margin-top:56px}
+h2{
+  font-family:Silkscreen, monospace; font-weight:400;
+  font-size:15px; line-height:1.4; margin:0 0 6px; color:var(--mint);
+}
+.lede{color:var(--dim); max-width:62ch; margin:0 0 22px; font-size:15px}
+.panel{background:var(--floor); border:1px solid var(--edge); padding:22px}
+
+/* ---------- controls ---------- */
+.dials{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:20px 26px}
+.dial label{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:7px}
+.dial .name{font-size:13px; color:var(--dim)}
+.dial .val{font-family:Silkscreen,monospace; font-size:14px; color:var(--ink)}
+input[type=range]{
+  -webkit-appearance:none; appearance:none; width:100%; height:22px;
+  background:transparent; cursor:pointer; margin:0;
+}
+input[type=range]::-webkit-slider-runnable-track{height:3px; background:var(--wall)}
+input[type=range]::-moz-range-track{height:3px; background:var(--wall)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:13px; height:13px; background:var(--mint);
+  margin-top:-5px; border:0; border-radius:0;
+}
+input[type=range]::-moz-range-thumb{width:13px; height:13px; background:var(--mint); border:0; border-radius:0}
+input[type=range]:focus-visible{outline:2px solid var(--focus); outline-offset:4px}
+input[type=number]{
+  width:100%; background:var(--den); border:1px solid var(--edge); color:var(--ink);
+  font-family:Silkscreen,monospace; font-size:15px; padding:7px 9px; border-radius:0;
+}
+input[type=number]:focus-visible{outline:2px solid var(--focus); outline-offset:1px}
+
+/* ---------- readouts ---------- */
+.reads{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px; background:var(--edge); border:1px solid var(--edge); margin-top:26px;
+}
+.read{background:var(--floor); padding:16px 16px 14px}
+.read .k{font-size:12px; color:var(--dim); margin-bottom:6px}
+.read .v{font-family:Silkscreen,monospace; font-size:23px; line-height:1.15; color:var(--ink)}
+.read .s{font-size:12px; color:var(--faint); margin-top:5px}
+.read.hi .v{color:var(--mint)}
+
+/* ---------- charts ---------- */
+figure{margin:26px 0 0}
+svg{display:block; width:100%; height:auto; overflow:visible}
+.cap{font-size:13px; color:var(--faint); margin-top:12px; max-width:62ch}
+.legend{display:flex; flex-wrap:wrap; gap:18px; margin-top:14px; font-size:13px; color:var(--dim)}
+.legend i{display:inline-block; width:13px; height:3px; margin-right:7px; vertical-align:middle}
+
+/* ---------- pools ---------- */
+.pools{display:grid; gap:1px; background:var(--edge); border:1px solid var(--edge)}
+.pool{background:var(--floor); padding:18px 20px; display:grid; grid-template-columns:1fr auto; gap:6px 18px; align-items:baseline}
+.pool .nm{font-family:Silkscreen,monospace; font-size:14px}
+.pool .ret{font-family:Silkscreen,monospace; font-size:19px; text-align:right}
+.pool .fx{grid-column:1/-1; font-size:13px; color:var(--dim); line-height:1.6}
+.pool code{font-family:Silkscreen,monospace; font-size:12px; color:var(--faint); background:var(--den); padding:2px 5px}
+.pool.w .nm,.pool.w .ret{color:var(--gold)}
+.pool.b .nm,.pool.b .ret{color:var(--rose)}
+.pool.t .nm,.pool.t .ret{color:var(--mint)}
+.pool.d .nm,.pool.d .ret{color:var(--dev)}
+.splitbar{display:flex; height:9px; margin-bottom:1px; border:1px solid var(--edge); border-bottom:0}
+.splitbar span{display:block}
+
+/* ---------- gem table ---------- */
+table{width:100%; border-collapse:collapse; font-size:14px}
+th{
+  text-align:left; font-weight:500; font-size:12px; color:var(--dim);
+  padding:0 10px 9px 0; border-bottom:1px solid var(--edge);
+}
+td{padding:8px 10px 8px 0; border-bottom:1px solid var(--wall); vertical-align:middle}
+td:first-child{font-family:Silkscreen,monospace; color:var(--rose); width:64px}
+.num{font-family:Silkscreen,monospace; font-size:13px; text-align:right; width:64px}
+.bar{width:44%}
+.bar div{height:7px; background:var(--rose); min-width:1px}
+tfoot td{border-bottom:0; padding-top:13px; color:var(--dim); font-size:13px}
+tfoot .num{color:var(--ink); font-size:14px}
+
+/* ---------- notes ---------- */
+.note{border-left:2px solid var(--gold); padding:2px 0 2px 18px; margin:22px 0 0; color:var(--dim); font-size:15px; max-width:64ch}
+.note b{color:var(--ink); font-weight:600}
+ul.gaps{list-style:none; padding:0; margin:0; display:grid; gap:1px; background:var(--edge); border:1px solid var(--edge)}
+ul.gaps li{background:var(--floor); padding:15px 18px; font-size:14px; color:var(--dim)}
+ul.gaps b{display:block; color:var(--ink); font-weight:600; font-size:14px; margin-bottom:3px}
+
+footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--edge); font-size:13px; color:var(--faint)}
+footer p{max-width:64ch}
+a{color:var(--mint); text-decoration:none; border-bottom:1px solid rgba(91,233,192,.3)}
+a:hover{border-bottom-color:var(--mint)}
+a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
+.fx-list{font-family:Silkscreen,monospace; font-size:12px; color:var(--dim); line-height:2.1; overflow-x:auto}
+
+@media (max-width:560px){
+  header{padding-top:36px}
+  section{margin-top:44px}
+  .panel{padding:17px}
+  .read .v{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="mark">Axie: Den of Mysteries 2.0 &nbsp;/&nbsp; Ronin</p>
+  <h1>Keys buy you<br>time and risk,<br>not more value.</h1>
+  <p class="standfirst">Every key you spend in the Den has the same expected return, whether you burn one per run or a hundred. <b>Splitting them changes only two things: how long you sit at the keyboard, and how bumpy the ride gets.</b></p>
+  <p class="standfirst">Everything below comes from the formulas printed in the DoM whitepaper. Nothing is estimated.</p>
+</header>
+
+<section>
+  <h2>Run it yourself</h2>
+  <p class="lede">Set a budget by choosing keys per run and how many runs you make. The Throne pool is the one number that actually moves your return, so it is live too.</p>
+
+  <div class="panel">
+    <div class="dials">
+      <div class="dial">
+        <label for="keys"><span class="name">Keys per run</span><span class="val" id="keysV">10</span></label>
+        <input type="range" id="keys" min="1" max="100" value="10">
+      </div>
+      <div class="dial">
+        <label for="runs"><span class="name">Runs</span><span class="val" id="runsV">10</span></label>
+        <input type="range" id="runs" min="1" max="100" value="10">
+      </div>
+      <div class="dial">
+        <label for="clear"><span class="name">Runs that reach Kilnbane</span><span class="val" id="clearV">100%</span></label>
+        <input type="range" id="clear" min="0" max="100" value="100">
+      </div>
+      <div class="dial">
+        <label for="skill"><span class="name">Your treasure vs average</span><span class="val" id="skillV">1.00x</span></label>
+        <input type="range" id="skill" min="40" max="220" value="100">
+      </div>
+      <div class="dial">
+        <label for="throne"><span class="name">Throne pool (USDc)</span><span class="val" id="throneStep">1 step</span></label>
+        <input type="number" id="throne" min="0" max="200000" step="1" value="407">
+      </div>
+      <div class="dial">
+        <label for="weekly"><span class="name">Weekly pool (USDc)</span><span class="val" id="weeklyHint">context</span></label>
+        <input type="number" id="weekly" min="0" max="10000000" step="1" value="10373">
+      </div>
+    </div>
+
+    <div class="reads">
+      <div class="read"><div class="k">Spend</div><div class="v" id="rSpend">$100</div><div class="s" id="rSpendS">100 keys at $1</div></div>
+      <div class="read hi"><div class="k">Expected back</div><div class="v" id="rEv">$92.75</div><div class="s" id="rEvS">92.7% of spend</div></div>
+      <div class="read"><div class="k">Typical swing</div><div class="v" id="rSd">±$31</div><div class="s" id="rSdS">one standard deviation</div></div>
+      <div class="read"><div class="k">Time in the Den</div><div class="v" id="rTime">2h 5m</div><div class="s" id="rTimeS">at 12.5 min a run</div></div>
+    </div>
+  </div>
+
+  <figure>
+    <svg id="chart1" viewBox="0 0 900 340" role="img" aria-labelledby="c1t"><title id="c1t">Expected return stays flat as keys per run increase, while the spread grows</title></svg>
+    <div class="legend">
+      <span><i style="background:var(--mint)"></i>Expected back</span>
+      <span><i style="background:var(--rose)"></i>Typical swing</span>
+      <span><i style="background:var(--faint)"></i>Your current split</span>
+    </div>
+    <p class="cap">Same total spend, redistributed. The green line does not move. That is the whole point.</p>
+  </figure>
+</section>
+
+<section>
+  <h2>Where each dollar goes</h2>
+  <p class="lede">A key costs $1 and is cut four ways the moment you spend it. Three of those cuts can come back to you.</p>
+
+  <div class="splitbar" aria-hidden="true">
+    <span style="background:var(--gold); width:70%"></span>
+    <span style="background:var(--rose); width:18%"></span>
+    <span style="background:var(--mint); width:5%"></span>
+    <span style="background:var(--dev); width:7%"></span>
+  </div>
+
+  <div class="pools">
+    <div class="pool w">
+      <div class="nm">Weekly Prize Pool &middot; 70c</div>
+      <div class="ret" id="pW">70.0c</div>
+      <div class="fx">Your treasure scales linearly with keys, and so does your share of the pool. The pool size cancels out of the arithmetic entirely: what survives is your treasure rate against the field.<br><code>back per key = 0.70 x your treasure ratio</code></div>
+    </div>
+    <div class="pool b">
+      <div class="nm">Blessing Pool &middot; 18c</div>
+      <div class="ret" id="pB">21.1c</div>
+      <div class="fx">Kilnbane's chest drops a gem 12% of the time. Cut across the published quality table, a gem averages 1.76x your buy-in.<br><code>back per key = clear rate x 0.12 x 1.76</code></div>
+    </div>
+    <div class="pool t">
+      <div class="nm">The Throne &middot; 5c</div>
+      <div class="ret" id="pT">1.6c</div>
+      <div class="fx">The one place key count vanishes from the maths: more keys raise the drop chance in exact proportion, so the two cancel. Pool size is what is left, and it enters twice.<br><code>back per key = clear rate x floor(pool / 250) x 0.00005 x 0.80 x pool</code></div>
+    </div>
+    <div class="pool d">
+      <div class="nm">Development &middot; 7c</div>
+      <div class="ret">0.0c</div>
+      <div class="fx">The house cut. DoM 1.0 returned 90c of every key to players; 2.0 returns 93c.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The Throne is the only real lever</h2>
+  <p class="lede">Pool size enters the Throne formula twice, once through the drop chance and once through the payout, so the return curves upward instead of climbing steadily. Below $250 it does not roll at all, and it steps rather than slopes because the formula floors the pool to the nearest $250.</p>
+
+  <div class="panel">
+    <div class="dial">
+      <label for="throne2"><span class="name">Drag the Throne pool</span><span class="val" id="throne2V">$407</span></label>
+      <input type="range" id="throne2" min="0" max="6000" step="25" value="407">
+    </div>
+    <figure>
+      <svg id="chart2" viewBox="0 0 900 320" role="img" aria-labelledby="c2t"><title id="c2t">Throne return per key against pool size, as a rising staircase</title></svg>
+      <p class="cap" id="cap2"></p>
+    </figure>
+  </div>
+
+  <p class="note"><b>Careful with this one.</b> Those are snapshot numbers, not a promise. The Throne is funded by 5c of every key, so across its whole life it cannot pay out more than that. A pool only reaches $2,500 if nobody has claimed it for a long time, and the moment it gets there it becomes a race. High readings on this chart describe rare moments, not the average week.</p>
+</section>
+
+<section>
+  <h2>What a gem is worth</h2>
+  <p class="lede">Published quality odds, and what they average out to. This is the table that makes the Blessing return computable.</p>
+  <div class="panel">
+    <table>
+      <thead><tr><th>Cut</th><th>Chance</th><th class="bar"></th><th class="num">Share of value</th></tr></thead>
+      <tbody id="gemRows"></tbody>
+      <tfoot><tr><td>Mean</td><td colspan="2">Expected multiplier on your buy-in</td><td class="num">1.76x</td></tr></tfoot>
+    </table>
+  </div>
+  <p class="note">A 1x cut is the single likeliest outcome at 45%, and four cuts in five land at 2x or below. Almost a third of a gem's average value sits in the 13x and 21x tails, which together show up once in every 67 gems.</p>
+</section>
+
+<section>
+  <h2>Does the model hold together</h2>
+  <p class="lede">A check worth doing on any economy model: add the parts back up and see whether they match what the designers said they were funding.</p>
+  <div class="panel">
+    <p class="note" style="margin-top:0"><b>Blessings overshoot their funding.</b> A player who reaches Kilnbane every single run pulls 21.1c per key out of a pool fed 18c per key. That gap is paid for by every run that ends before floor 10. Set the clear-rate dial to <span id="beRate">85%</span> and the two numbers meet.</p>
+    <p class="note"><b>The Throne undershoots, then overshoots.</b> At the current $407 it returns 1.6c per key against 5c of funding. It reaches break-even at exactly $625, and everything above that is borrowed from the weeks nobody claimed it.</p>
+    <p class="note"><b>Add the designed shares and you get 93c.</b> The live model lands near that only by coincidence at small Throne pools, where the Blessing surplus and the Throne shortfall happen to cancel. Move either dial and they stop cancelling.</p>
+  </div>
+</section>
+
+<section>
+  <h2>What this model cannot tell you</h2>
+  <p class="lede">Four gaps, left as gaps rather than filled with guesses.</p>
+  <ul class="gaps">
+    <li><b>Whether the Weekly pool is seeded</b>The whitepaper does not say. DoM 1.0 launched with $5,000 placed into the Blessing Pool, so seeding is plausible, and it would change any attempt to read key sales out of the pool size.</li>
+    <li><b>What happens when the Blessing Pool runs thin</b>DoM 1.0 described a self-balancing mechanism. The 2.0 whitepaper drops that language and does not replace it, so the behaviour of a 21x cut against a shallow pool is undocumented.</li>
+    <li><b>The real clear rate</b>Nobody has published what share of key spend actually reaches floor 10. It is the single input this model most depends on, and the dial above is a guess until the team shares it.</li>
+    <li><b>Buba Caps</b>The Arcade header lists them alongside Treasure, Blessings and Raffle Tickets. The whitepaper's rewards page does not mention them at all.</li>
+  </ul>
+</section>
+
+<footer>
+  <p class="fx-list">
+    weekly&nbsp; = 0.70 x treasure_ratio<br>
+    blessing = clear_rate x 0.12 x 1.76<br>
+    throne&nbsp;&nbsp; = min(1, clear_rate x floor(pool/250) x 0.00005 x keys) x 0.80 x pool
+  </p>
+  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">Axie: Den of Mysteries whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a>. Nothing here is affiliated with Onchain Heroes or Sky Mavis, and none of it is financial advice. Default pool values were read from the game on 16 September 2026. DoM 1.0 numbers are not interchangeable with these.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var GEM = [
+    {m:0.5,  p:0.200},
+    {m:1,    p:0.450},
+    {m:2,    p:0.200},
+    {m:3,    p:0.080},
+    {m:5,    p:0.035},
+    {m:8,    p:0.020},
+    {m:13,   p:0.010},
+    {m:21,   p:0.005}
+  ];
+  var EM = 0, EM2 = 0, i;
+  for(i=0;i<GEM.length;i++){ EM += GEM[i].m*GEM[i].p; EM2 += GEM[i].m*GEM[i].m*GEM[i].p; }
+  var MIN_PER_RUN = 12.5;
+
+  function el(id){ return document.getElementById(id); }
+
+  // ---- core maths -------------------------------------------------------
+  function throneChance(pool, keys, clear){
+    var steps = Math.floor(pool/250);
+    return Math.min(1, clear * steps * 0.00005 * keys);
+  }
+  function perRun(keys, pool, ratio, clear){
+    var pb = clear*0.12;
+    var evB = keys*pb*EM;
+    var varB = keys*keys*(pb*EM2 - pb*EM*pb*EM);
+    var q = throneChance(pool, keys, clear);
+    var pay = 0.80*pool;
+    var evT = q*pay;
+    var varT = pay*pay*q*(1-q);
+    return { evW: 0.70*ratio*keys, evB: evB, evT: evT, varB: varB, varT: varT };
+  }
+  function portfolio(keys, runs, pool, ratio, clear){
+    var r = perRun(keys, pool, ratio, clear);
+    var ev = runs*(r.evW + r.evB + r.evT);
+    var sd = Math.sqrt(runs*(r.varB + r.varT));
+    return { spend: keys*runs, ev: ev, sd: sd, unit: r };
+  }
+
+  // ---- formatting -------------------------------------------------------
+  function money(v){
+    if(v >= 1000) return "$" + Math.round(v).toLocaleString("en-US");
+    if(v >= 100)  return "$" + v.toFixed(0);
+    return "$" + v.toFixed(2);
+  }
+  function cents(v){ return (v*100).toFixed(1) + "c"; }
+  function clock(mins){
+    var h = Math.floor(mins/60), m = Math.round(mins%60);
+    if(h === 0) return m + "m";
+    if(h >= 24) return Math.floor(h/24) + "d " + (h%24) + "h";
+    return h + "h " + m + "m";
+  }
+
+  // ---- svg helpers ------------------------------------------------------
+  var NS = "http://www.w3.org/2000/svg";
+  function node(name, attrs, text){
+    var n = document.createElementNS(NS, name);
+    for(var k in attrs){ if(attrs.hasOwnProperty(k)) n.setAttribute(k, attrs[k]); }
+    if(text !== undefined) n.textContent = text;
+    return n;
+  }
+  function reset(svg){
+    var t = svg.querySelector("title");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    if(t) svg.appendChild(t);
+  }
+  function label(x, y, text, fill, anchor, size){
+    return node("text", {
+      x:x, y:y, fill:fill||"#849A8C", "text-anchor":anchor||"start",
+      "font-family":"Silkscreen, monospace", "font-size":size||11
+    }, text);
+  }
+
+  // ---- chart 1 : flat expectation, growing spread -----------------------
+  function drawSplit(keys, runs, pool, ratio, clear){
+    var svg = el("chart1");
+    reset(svg);
+    var L=64, R=884, T=26, B=286, W=R-L, H=B-T;
+    var budget = keys*runs;
+    if(budget <= 0) return;
+
+    var pts = [], k, n, r, ev, sd, top = 0;
+    for(k=1;k<=100;k++){
+      n = budget/k;
+      r = perRun(k, pool, ratio, clear);
+      ev = n*(r.evW + r.evB + r.evT);
+      sd = Math.sqrt(n*(r.varB + r.varT));
+      pts.push({k:k, ev:ev, sd:sd});
+      if(ev > top) top = ev;
+      if(sd > top) top = sd;
+    }
+    top = top * 1.16 || 1;
+
+    var X = function(k){ return L + (k-1)/99*W; };
+    var Y = function(v){ return B - (v/top)*H; };
+
+    // grid
+    var g, gy;
+    for(g=0; g<=4; g++){
+      gy = T + g*(H/4);
+      svg.appendChild(node("line",{x1:L,y1:gy,x2:R,y2:gy,stroke:"#1B2E25","stroke-width":1}));
+      svg.appendChild(label(L-11, gy+4, money(top*(1-g/4)), "#5A7267", "end", 10));
+    }
+    // marker for current split
+    svg.appendChild(node("line",{x1:X(keys),y1:T-6,x2:X(keys),y2:B,stroke:"#5A7267","stroke-width":1,"stroke-dasharray":"3 4"}));
+    svg.appendChild(label(X(keys), T-12, keys + (keys===1?" key":" keys"), "#849A8C", keys>70?"end":"start", 10));
+
+    // paths
+    var dEv = "", dSd = "", j;
+    for(j=0;j<pts.length;j++){
+      dEv += (j?"L":"M") + X(pts[j].k).toFixed(1) + " " + Y(pts[j].ev).toFixed(1);
+      dSd += (j?"L":"M") + X(pts[j].k).toFixed(1) + " " + Y(pts[j].sd).toFixed(1);
+    }
+    svg.appendChild(node("path",{d:dSd,fill:"none",stroke:"#F26BC8","stroke-width":2}));
+    svg.appendChild(node("path",{d:dEv,fill:"none",stroke:"#5BE9C0","stroke-width":2.5}));
+
+    // dots at current split
+    var cur = pts[keys-1];
+    svg.appendChild(node("rect",{x:X(keys)-4,y:Y(cur.sd)-4,width:8,height:8,fill:"#F26BC8"}));
+    svg.appendChild(node("rect",{x:X(keys)-4,y:Y(cur.ev)-4,width:8,height:8,fill:"#5BE9C0"}));
+
+    // axis
+    svg.appendChild(node("line",{x1:L,y1:B,x2:R,y2:B,stroke:"#243b30","stroke-width":1}));
+    [1,25,50,75,100].forEach(function(t){
+      svg.appendChild(label(X(t), B+22, String(t), "#5A7267", t===1?"start":(t===100?"end":"middle"), 10));
+    });
+    svg.appendChild(label(L, B+46, "keys per run, holding total spend at " + money(budget), "#5A7267", "start", 11));
+  }
+
+  // ---- chart 2 : throne staircase ---------------------------------------
+  function drawThrone(pool, clear){
+    var svg = el("chart2");
+    reset(svg);
+    var L=64, R=884, T=26, B=248, W=R-L, H=B-T;
+    var MAXP = 6000;
+    var top = 0, series = [], p, v;
+    for(p=0;p<=MAXP;p+=25){
+      v = clear * Math.floor(p/250) * 0.00005 * 0.80 * p;
+      series.push({p:p, v:v});
+      if(v > top) top = v;
+    }
+    top = top*1.12 || 1;
+
+    var X = function(pp){ return L + pp/MAXP*W; };
+    var Y = function(vv){ return B - (vv/top)*H; };
+
+    var g, gy;
+    for(g=0; g<=4; g++){
+      gy = T + g*(H/4);
+      svg.appendChild(node("line",{x1:L,y1:gy,x2:R,y2:gy,stroke:"#1B2E25","stroke-width":1}));
+      svg.appendChild(label(L-11, gy+4, cents(top*(1-g/4)), "#5A7267", "end", 10));
+    }
+
+    // break-even against the 5c the throne is funded with
+    svg.appendChild(node("line",{x1:L,y1:Y(0.05),x2:R,y2:Y(0.05),stroke:"#F2B33D","stroke-width":1,"stroke-dasharray":"4 4"}));
+    svg.appendChild(label(R, Y(0.05)-8, "5c, what it is funded with", "#F2B33D", "end", 10));
+
+    var d = "", j;
+    for(j=0;j<series.length;j++){
+      d += (j?"L":"M") + X(series[j].p).toFixed(1) + " " + Y(series[j].v).toFixed(1);
+    }
+    svg.appendChild(node("path",{d:d,fill:"none",stroke:"#5BE9C0","stroke-width":2}));
+
+    // threshold
+    svg.appendChild(node("line",{x1:X(250),y1:T,x2:X(250),y2:B,stroke:"#243b30","stroke-width":1}));
+    svg.appendChild(label(X(250)+6, T+12, "below $250 it never rolls", "#5A7267", "start", 10));
+
+    // live marker
+    var cp = Math.min(pool, MAXP);
+    var cv = clear * Math.floor(cp/250) * 0.00005 * 0.80 * cp;
+    svg.appendChild(node("line",{x1:X(cp),y1:Y(cv),x2:X(cp),y2:B,stroke:"#5A7267","stroke-width":1,"stroke-dasharray":"3 4"}));
+    svg.appendChild(node("rect",{x:X(cp)-4,y:Y(cv)-4,width:8,height:8,fill:"#5BE9C0"}));
+
+    svg.appendChild(node("line",{x1:L,y1:B,x2:R,y2:B,stroke:"#243b30","stroke-width":1}));
+    [0,1500,3000,4500,6000].forEach(function(t){
+      svg.appendChild(label(X(t), B+22, "$"+t.toLocaleString("en-US"), "#5A7267", t===0?"start":(t===6000?"end":"middle"), 10));
+    });
+    svg.appendChild(label(L, B+46, "Throne pool", "#5A7267", "start", 11));
+  }
+
+  // ---- gem table --------------------------------------------------------
+  (function(){
+    var body = el("gemRows"), maxp = 0, k;
+    for(k=0;k<GEM.length;k++){ if(GEM[k].p > maxp) maxp = GEM[k].p; }
+    GEM.forEach(function(g){
+      var tr = document.createElement("tr");
+      var share = (g.m*g.p)/EM*100;
+      tr.innerHTML =
+        "<td>" + g.m + "x</td>" +
+        "<td>" + (g.p*100).toFixed(1) + "%</td>" +
+        '<td class="bar"><div style="width:' + (g.p/maxp*100) + '%"></div></td>' +
+        '<td class="num">' + share.toFixed(0) + "%</td>";
+      body.appendChild(tr);
+    });
+  })();
+
+  // ---- wiring -----------------------------------------------------------
+  var keysI=el("keys"), runsI=el("runs"), clearI=el("clear"), skillI=el("skill"),
+      throneI=el("throne"), throne2I=el("throne2"), weeklyI=el("weekly");
+
+  function syncThrone(v){
+    var n = Math.max(0, Math.min(200000, Math.round(v) || 0));
+    throneI.value = n;
+    throne2I.value = Math.min(6000, n);
+    return n;
+  }
+
+  function render(){
+    var keys  = parseInt(keysI.value,10);
+    var runs  = parseInt(runsI.value,10);
+    var clear = parseInt(clearI.value,10)/100;
+    var ratio = parseInt(skillI.value,10)/100;
+    var pool  = Math.max(0, parseInt(throneI.value,10) || 0);
+    var weekly= Math.max(0, parseInt(weeklyI.value,10) || 0);
+
+    el("keysV").textContent  = keys;
+    el("runsV").textContent  = runs;
+    el("clearV").textContent = Math.round(clear*100) + "%";
+    el("skillV").textContent = ratio.toFixed(2) + "x";
+    el("throne2V").textContent = "$" + pool.toLocaleString("en-US");
+
+    var steps = Math.floor(pool/250);
+    el("throneStep").textContent = steps === 0 ? "no roll" : steps + (steps===1?" step":" steps");
+    el("weeklyHint").textContent = weekly > 0 ? "~" + Math.round(weekly/0.70).toLocaleString("en-US") + " keys" : "unfunded";
+
+    var res = portfolio(keys, runs, pool, ratio, clear);
+
+    el("rSpend").textContent = money(res.spend);
+    el("rSpendS").textContent = res.spend.toLocaleString("en-US") + " keys at $1";
+    el("rEv").textContent = money(res.ev);
+    el("rEvS").textContent = (res.ev/res.spend*100).toFixed(1) + "% of spend";
+    el("rSd").textContent = "±" + money(res.sd);
+    el("rSdS").textContent = res.ev > 0 ? (res.sd/res.ev*100).toFixed(0) + "% of the expectation" : "one standard deviation";
+    el("rTime").textContent = clock(runs*MIN_PER_RUN);
+
+    el("pW").textContent = cents(0.70*ratio);
+    el("pB").textContent = cents(clear*0.12*EM);
+    el("pT").textContent = cents(res.unit.evT/keys);
+
+    var be = (0.18/(0.12*EM))*100;
+    el("beRate").textContent = be.toFixed(0) + "%";
+
+    var cv = clear*Math.floor(pool/250)*0.00005*0.80*pool;
+    el("cap2").textContent = steps === 0
+      ? "At $" + pool.toLocaleString("en-US") + " the pool sits under the $250 threshold, so the Throne contributes nothing at all."
+      : "At $" + pool.toLocaleString("en-US") + " the Throne returns " + cents(cv) + " per key, whatever your key count. It reaches the 5c that funds it at exactly $625.";
+
+    drawSplit(keys, runs, pool, ratio, clear);
+    drawThrone(pool, clear);
+  }
+
+  [keysI, runsI, clearI, skillI, weeklyI].forEach(function(n){
+    n.addEventListener("input", render);
+  });
+  throneI.addEventListener("input", function(){ syncThrone(throneI.value); render(); });
+  throne2I.addEventListener("input", function(){ throneI.value = throne2I.value; render(); });
+
+  render();
+  window.addEventListener("resize", render);
+})();
+</script>
+</body>
+</html>
