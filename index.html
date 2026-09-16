@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DoM Key Math</title>
+<meta name="description" content="An interactive calculator that checks Axie: Den of Mysteries 2.0's key-spending returns against the whitepaper's own formulas.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%235BE9C0' d='M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +12,8 @@
 <style>
 :root{
   --den:#0B1611; --floor:#111F19; --wall:#1B2E25; --edge:#243B30;
-  --ink:#DFEAE2; --dim:#849A8C; --faint:#5A7267;
-  --gold:#F2B33D; --mint:#5BE9C0; --rose:#F26BC8; --dev:#4C6459;
+  --ink:#DFEAE2; --dim:#849A8C; --faint:#6E8B7E;
+  --gold:#F2B33D; --mint:#5BE9C0; --rose:#F26BC8; --dev:#6B8C7D;
   --focus:#5BE9C0;
 }
 :root:not([data-theme="light"]){color-scheme:dark}
@@ -150,7 +151,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
 
 <header>
   <p class="mark">Axie: Den of Mysteries 2.0 &nbsp;/&nbsp; Ronin</p>
@@ -281,7 +282,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
   <p class="lede">Do the funded shares actually add up to what the designers promised?</p>
   <div class="panel">
     <p class="note" style="margin-top:0"><b>Blessings overshoot their funding:</b> 21.1c comes out per key against 18c put in, a gap covered by every run that dies before floor 10. Balance sits at an <span id="beRate">85%</span> clear rate.</p>
-    <p class="note"><b>The Throne undershoots, then overshoots:</b> $407 returns 1.6c against 5c of funding, break-even lands at exactly $625.</p>
+    <p class="note"><b>The Throne undershoots, then overshoots:</b> <span id="bePool">$407</span> returns <span id="bePoolRet">1.6c</span> against 5c of funding, break-even lands at exactly $625.</p>
     <p class="note"><b>Add the designed shares and you get 93c.</b> That's true only by coincidence, when the Blessing surplus cancels the Throne shortfall at small pools.</p>
   </div>
 </section>
@@ -303,10 +304,10 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     blessing = clear_rate x 0.12 x 1.76<br>
     throne&nbsp;&nbsp; = min(1, clear_rate x floor(pool/250) x 0.00005 x keys) x 0.80 x pool
   </p>
-  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a>. Not affiliated with Onchain Heroes or Sky Mavis, not financial advice. Read from the game on 16 September 2026; DoM 1.0 numbers don't carry over.</p>
+  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a>. Not affiliated with Onchain Heroes or Sky Mavis, not financial advice. Pool defaults were read from the game on 16 September 2026; DoM 1.0 numbers don't carry over.</p>
 </footer>
 
-</div>
+</main>
 
 <script>
 (function(){
@@ -557,6 +558,9 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     el("cap2").textContent = steps === 0
       ? "At $" + pool.toLocaleString("en-US") + " the pool sits under the $250 threshold, so the Throne contributes nothing at all."
       : "At $" + pool.toLocaleString("en-US") + " the Throne returns " + cents(cv) + " per key, whatever your key count. It reaches the 5c that funds it at exactly $625.";
+
+    el("bePool").textContent = "$" + pool.toLocaleString("en-US");
+    el("bePoolRet").textContent = cents(cv);
 
     drawSplit(keys, runs, pool, ratio, clear);
     drawThrone(pool, clear);
