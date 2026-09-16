@@ -161,7 +161,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
 
 <section>
   <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="1" y="2" width="4" height="1"/><rect x="1" y="5" width="4" height="1"/><rect x="1" y="3" width="1" height="2"/><rect x="4" y="3" width="1" height="2"/><rect x="5" y="3" width="6" height="2"/><rect x="7" y="5" width="1" height="1"/><rect x="9" y="5" width="2" height="1"/></svg>Run it yourself</h2>
-  <p class="lede">Set keys and runs freely — only the Throne pool actually moves your return.</p>
+  <p class="lede">Set your budget, then see what actually moves the number.</p>
 
   <div class="panel">
     <div class="dials">
@@ -240,7 +240,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     <div class="pool d">
       <div class="nm">Development &middot; 7c</div>
       <div class="ret">0.0c</div>
-      <div class="fx">The house cut — DoM 1.0 returned 90c per key, 2.0 returns 93c.</div>
+      <div class="fx">The house cut: DoM 1.0 returned 90c per key, 2.0 returns 93c.</div>
     </div>
   </div>
 </section>
@@ -260,7 +260,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     </figure>
   </div>
 
-  <p class="note"><b>Careful with this one.</b> Snapshot numbers, not a promise — funded by 5c a key, a pool only reaches $2,500 after a long unclaimed stretch, so high readings are rare, not average.</p>
+  <p class="note"><b>Careful with this one.</b> Snapshot numbers, not a promise. Funded by 5c a key, a pool only reaches $2,500 after a long unclaimed stretch, so high readings are rare, not average.</p>
 </section>
 
 <section>
@@ -273,16 +273,16 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
       <tfoot><tr><td>Mean</td><td colspan="2">Expected multiplier on your buy-in</td><td class="num">1.76x</td></tr></tfoot>
     </table>
   </div>
-  <p class="note">A 1x cut lands 45% of the time, four in five land at 2x or under, and the 13x/21x tails — one gem in 67 — hold nearly a third of the value.</p>
+  <p class="note">A 1x cut lands 45% of the time, four in five land at 2x or under. The 13x/21x tails, one gem in 67, hold nearly a third of the value.</p>
 </section>
 
 <section>
   <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="2" y="1" width="8" height="1"/><rect x="1" y="2" width="10" height="4"/><rect x="2" y="6" width="8" height="2"/><rect x="3" y="8" width="6" height="1"/><rect x="4" y="9" width="4" height="1"/><rect x="5" y="10" width="2" height="1"/></svg>Does the model hold together</h2>
   <p class="lede">Do the funded shares actually add up to what the designers promised?</p>
   <div class="panel">
-    <p class="note" style="margin-top:0"><b>Blessings overshoot their funding:</b> 21.1c comes out per key against 18c put in, a gap covered by every run that dies before floor 10 — balance sits at a <span id="beRate">85%</span> clear rate.</p>
+    <p class="note" style="margin-top:0"><b>Blessings overshoot their funding:</b> 21.1c comes out per key against 18c put in, a gap covered by every run that dies before floor 10. Balance sits at an <span id="beRate">85%</span> clear rate.</p>
     <p class="note"><b>The Throne undershoots, then overshoots:</b> $407 returns 1.6c against 5c of funding, break-even lands at exactly $625.</p>
-    <p class="note"><b>Add the designed shares and you get 93c</b> — true only by coincidence, when the Blessing surplus cancels the Throne shortfall at small pools.</p>
+    <p class="note"><b>Add the designed shares and you get 93c.</b> That's true only by coincidence, when the Blessing surplus cancels the Throne shortfall at small pools.</p>
   </div>
 </section>
 
@@ -290,10 +290,10 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
   <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="3" y="1" width="6" height="2"/><rect x="7" y="3" width="2" height="2"/><rect x="5" y="5" width="2" height="2"/><rect x="5" y="9" width="2" height="2"/></svg>What this model cannot tell you</h2>
   <p class="lede">Four gaps, left open rather than guessed.</p>
   <ul class="gaps">
-    <li><b>Whether the Weekly pool is seeded</b>Unstated. DoM 1.0 seeded $5,000 once, so it's plausible — and would skew any pool-size read on sales.</li>
+    <li><b>Whether the Weekly pool is seeded</b>Unstated. DoM 1.0 seeded $5,000 once, so it's plausible, and would skew any pool-size read on sales.</li>
     <li><b>What happens when the Blessing Pool runs thin</b>DoM 1.0 had a fix; 2.0 drops it unreplaced, leaving a 21x cut against a shallow pool undocumented.</li>
-    <li><b>The real clear rate</b>Unpublished, though it's the model's most critical input — the dial above is a guess until the team shares it.</li>
-    <li><b>Buba Caps</b>Listed in the Arcade header with Treasure, Blessings, and Raffle Tickets — absent from the whitepaper's rewards page.</li>
+    <li><b>The real clear rate</b>Unpublished, though it's the model's most critical input. The dial above is a guess until the team shares it.</li>
+    <li><b>Buba Caps</b>Listed in the Arcade header with Treasure, Blessings, and Raffle Tickets. Not mentioned on the whitepaper's rewards page.</li>
   </ul>
 </section>
 
@@ -303,7 +303,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     blessing = clear_rate x 0.12 x 1.76<br>
     throne&nbsp;&nbsp; = min(1, clear_rate x floor(pool/250) x 0.00005 x keys) x 0.80 x pool
   </p>
-  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a> — not affiliated with Onchain Heroes or Sky Mavis, not financial advice. Read from the game on 16 September 2026; DoM 1.0 numbers don't carry over.</p>
+  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a>. Not affiliated with Onchain Heroes or Sky Mavis, not financial advice. Read from the game on 16 September 2026; DoM 1.0 numbers don't carry over.</p>
 </footer>
 
 </div>
