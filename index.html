@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DoM Key Math</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%235BE9C0' d='M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -50,9 +51,11 @@ section{margin-top:56px}
 h2{
   font-family:Silkscreen, monospace; font-weight:400;
   font-size:15px; line-height:1.4; margin:0 0 6px; color:var(--mint);
+  display:flex; align-items:center; gap:9px;
 }
+.h2ico{width:12px; height:12px; flex:0 0 auto; fill:currentColor}
 .lede{color:var(--dim); max-width:62ch; margin:0 0 22px; font-size:15px}
-.panel{background:var(--floor); border:1px solid var(--edge); padding:22px}
+.panel{background:var(--floor); border:2px solid var(--edge); padding:22px}
 
 /* ---------- controls ---------- */
 .dials{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:20px 26px}
@@ -66,10 +69,10 @@ input[type=range]{
 input[type=range]::-webkit-slider-runnable-track{height:3px; background:var(--wall)}
 input[type=range]::-moz-range-track{height:3px; background:var(--wall)}
 input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none; width:13px; height:13px; background:var(--mint);
-  margin-top:-5px; border:0; border-radius:0;
+  -webkit-appearance:none; width:16px; height:16px; background:var(--mint);
+  margin-top:-6.5px; border:0; border-radius:0;
 }
-input[type=range]::-moz-range-thumb{width:13px; height:13px; background:var(--mint); border:0; border-radius:0}
+input[type=range]::-moz-range-thumb{width:16px; height:16px; background:var(--mint); border:0; border-radius:0}
 input[type=range]:focus-visible{outline:2px solid var(--focus); outline-offset:4px}
 input[type=number]{
   width:100%; background:var(--den); border:1px solid var(--edge); color:var(--ink);
@@ -80,7 +83,7 @@ input[type=number]:focus-visible{outline:2px solid var(--focus); outline-offset:
 /* ---------- readouts ---------- */
 .reads{
   display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:1px; background:var(--edge); border:1px solid var(--edge); margin-top:26px;
+  gap:1px; background:var(--edge); border:2px solid var(--edge); margin-top:26px;
 }
 .read{background:var(--floor); padding:16px 16px 14px}
 .read .k{font-size:12px; color:var(--dim); margin-bottom:6px}
@@ -90,13 +93,13 @@ input[type=number]:focus-visible{outline:2px solid var(--focus); outline-offset:
 
 /* ---------- charts ---------- */
 figure{margin:26px 0 0}
-svg{display:block; width:100%; height:auto; overflow:visible}
+svg{display:block; width:100%; height:auto; overflow:visible; shape-rendering:crispEdges}
 .cap{font-size:13px; color:var(--faint); margin-top:12px; max-width:62ch}
 .legend{display:flex; flex-wrap:wrap; gap:18px; margin-top:14px; font-size:13px; color:var(--dim)}
 .legend i{display:inline-block; width:13px; height:3px; margin-right:7px; vertical-align:middle}
 
 /* ---------- pools ---------- */
-.pools{display:grid; gap:1px; background:var(--edge); border:1px solid var(--edge)}
+.pools{display:grid; gap:1px; background:var(--edge); border:2px solid var(--edge)}
 .pool{background:var(--floor); padding:18px 20px; display:grid; grid-template-columns:1fr auto; gap:6px 18px; align-items:baseline}
 .pool .nm{font-family:Silkscreen,monospace; font-size:14px}
 .pool .ret{font-family:Silkscreen,monospace; font-size:19px; text-align:right}
@@ -106,16 +109,16 @@ svg{display:block; width:100%; height:auto; overflow:visible}
 .pool.b .nm,.pool.b .ret{color:var(--rose)}
 .pool.t .nm,.pool.t .ret{color:var(--mint)}
 .pool.d .nm,.pool.d .ret{color:var(--dev)}
-.splitbar{display:flex; height:9px; margin-bottom:1px; border:1px solid var(--edge); border-bottom:0}
+.splitbar{display:flex; height:9px; margin-bottom:1px; border:2px solid var(--edge); border-bottom:0}
 .splitbar span{display:block}
 
 /* ---------- gem table ---------- */
 table{width:100%; border-collapse:collapse; font-size:14px}
 th{
   text-align:left; font-weight:500; font-size:12px; color:var(--dim);
-  padding:0 10px 9px 0; border-bottom:1px solid var(--edge);
+  padding:0 10px 9px 0; border-bottom:2px solid var(--edge);
 }
-td{padding:8px 10px 8px 0; border-bottom:1px solid var(--wall); vertical-align:middle}
+td{padding:8px 10px 8px 0; border-bottom:2px solid var(--wall); vertical-align:middle}
 td:first-child{font-family:Silkscreen,monospace; color:var(--rose); width:64px}
 .num{font-family:Silkscreen,monospace; font-size:13px; text-align:right; width:64px}
 .bar{width:44%}
@@ -126,11 +129,11 @@ tfoot .num{color:var(--ink); font-size:14px}
 /* ---------- notes ---------- */
 .note{border-left:2px solid var(--gold); padding:2px 0 2px 18px; margin:22px 0 0; color:var(--dim); font-size:15px; max-width:64ch}
 .note b{color:var(--ink); font-weight:600}
-ul.gaps{list-style:none; padding:0; margin:0; display:grid; gap:1px; background:var(--edge); border:1px solid var(--edge)}
+ul.gaps{list-style:none; padding:0; margin:0; display:grid; gap:1px; background:var(--edge); border:2px solid var(--edge)}
 ul.gaps li{background:var(--floor); padding:15px 18px; font-size:14px; color:var(--dim)}
 ul.gaps b{display:block; color:var(--ink); font-weight:600; font-size:14px; margin-bottom:3px}
 
-footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--edge); font-size:13px; color:var(--faint)}
+footer{margin-top:64px; padding-top:26px; border-top:2px solid var(--edge); font-size:13px; color:var(--faint)}
 footer p{max-width:64ch}
 a{color:var(--mint); text-decoration:none; border-bottom:1px solid rgba(91,233,192,.3)}
 a:hover{border-bottom-color:var(--mint)}
@@ -152,13 +155,13 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
 <header>
   <p class="mark">Axie: Den of Mysteries 2.0 &nbsp;/&nbsp; Ronin</p>
   <h1>Keys buy you<br>time and risk,<br>not more value.</h1>
-  <p class="standfirst">Every key you spend in the Den has the same expected return, whether you burn one per run or a hundred. <b>Splitting them changes only two things: how long you sit at the keyboard, and how bumpy the ride gets.</b></p>
-  <p class="standfirst">Everything below comes from the formulas printed in the DoM whitepaper. Nothing is estimated.</p>
+  <p class="standfirst">Every key has the same expected return, whether you spend one per run or a hundred. <b>Splitting them only changes how long you play and how bumpy it gets.</b></p>
+  <p class="standfirst">Every number below traces to the DoM whitepaper formulas.</p>
 </header>
 
 <section>
-  <h2>Run it yourself</h2>
-  <p class="lede">Set a budget by choosing keys per run and how many runs you make. The Throne pool is the one number that actually moves your return, so it is live too.</p>
+  <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="1" y="2" width="4" height="1"/><rect x="1" y="5" width="4" height="1"/><rect x="1" y="3" width="1" height="2"/><rect x="4" y="3" width="1" height="2"/><rect x="5" y="3" width="6" height="2"/><rect x="7" y="5" width="1" height="1"/><rect x="9" y="5" width="2" height="1"/></svg>Run it yourself</h2>
+  <p class="lede">Set keys and runs freely — only the Throne pool actually moves your return.</p>
 
   <div class="panel">
     <div class="dials">
@@ -180,7 +183,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
       </div>
       <div class="dial">
         <label for="throne"><span class="name">Throne pool (USDc)</span><span class="val" id="throneStep">1 step</span></label>
-        <input type="number" id="throne" min="0" max="200000" step="1" value="407">
+        <input type="number" id="throne" min="0" max="6000" step="1" value="407">
       </div>
       <div class="dial">
         <label for="weekly"><span class="name">Weekly pool (USDc)</span><span class="val" id="weeklyHint">context</span></label>
@@ -208,8 +211,8 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
 </section>
 
 <section>
-  <h2>Where each dollar goes</h2>
-  <p class="lede">A key costs $1 and is cut four ways the moment you spend it. Three of those cuts can come back to you.</p>
+  <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="0" y="4" width="7" height="4"/><rect x="7" y="4" width="2" height="4"/><rect x="9" y="4" width="1" height="4"/><rect x="10" y="4" width="2" height="4"/></svg>Where each dollar goes</h2>
+  <p class="lede">A $1 key splits four ways; three cuts can come back to you.</p>
 
   <div class="splitbar" aria-hidden="true">
     <span style="background:var(--gold); width:70%"></span>
@@ -222,29 +225,29 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     <div class="pool w">
       <div class="nm">Weekly Prize Pool &middot; 70c</div>
       <div class="ret" id="pW">70.0c</div>
-      <div class="fx">Your treasure scales linearly with keys, and so does your share of the pool. The pool size cancels out of the arithmetic entirely: what survives is your treasure rate against the field.<br><code>back per key = 0.70 x your treasure ratio</code></div>
+      <div class="fx">Pool size cancels out; only your treasure rate against the field matters.<br><code>back per key = 0.70 x your treasure ratio</code></div>
     </div>
     <div class="pool b">
       <div class="nm">Blessing Pool &middot; 18c</div>
       <div class="ret" id="pB">21.1c</div>
-      <div class="fx">Kilnbane's chest drops a gem 12% of the time. Cut across the published quality table, a gem averages 1.76x your buy-in.<br><code>back per key = clear rate x 0.12 x 1.76</code></div>
+      <div class="fx">Kilnbane's chest drops a gem 12% of the time, averaging 1.76x your buy-in.<br><code>back per key = clear rate x 0.12 x 1.76</code></div>
     </div>
     <div class="pool t">
       <div class="nm">The Throne &middot; 5c</div>
       <div class="ret" id="pT">1.6c</div>
-      <div class="fx">The one place key count vanishes from the maths: more keys raise the drop chance in exact proportion, so the two cancel. Pool size is what is left, and it enters twice.<br><code>back per key = clear rate x floor(pool / 250) x 0.00005 x 0.80 x pool</code></div>
+      <div class="fx">Key count cancels out entirely; pool size is what's left, and it counts twice.<br><code>back per key = clear rate x floor(pool / 250) x 0.00005 x 0.80 x pool</code></div>
     </div>
     <div class="pool d">
       <div class="nm">Development &middot; 7c</div>
       <div class="ret">0.0c</div>
-      <div class="fx">The house cut. DoM 1.0 returned 90c of every key to players; 2.0 returns 93c.</div>
+      <div class="fx">The house cut — DoM 1.0 returned 90c per key, 2.0 returns 93c.</div>
     </div>
   </div>
 </section>
 
 <section>
-  <h2>The Throne is the only real lever</h2>
-  <p class="lede">Pool size enters the Throne formula twice, once through the drop chance and once through the payout, so the return curves upward instead of climbing steadily. Below $250 it does not roll at all, and it steps rather than slopes because the formula floors the pool to the nearest $250.</p>
+  <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="2" y="1" width="8" height="2"/><rect x="2" y="3" width="2" height="6"/><rect x="8" y="3" width="2" height="6"/><rect x="2" y="7" width="8" height="2"/><rect x="1" y="9" width="1" height="2"/><rect x="10" y="9" width="1" height="2"/></svg>The Throne is the only real lever</h2>
+  <p class="lede">Pool size counts twice in the Throne formula, so returns climb in $250 steps and stay at zero below it.</p>
 
   <div class="panel">
     <div class="dial">
@@ -257,12 +260,12 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     </figure>
   </div>
 
-  <p class="note"><b>Careful with this one.</b> Those are snapshot numbers, not a promise. The Throne is funded by 5c of every key, so across its whole life it cannot pay out more than that. A pool only reaches $2,500 if nobody has claimed it for a long time, and the moment it gets there it becomes a race. High readings on this chart describe rare moments, not the average week.</p>
+  <p class="note"><b>Careful with this one.</b> Snapshot numbers, not a promise — funded by 5c a key, a pool only reaches $2,500 after a long unclaimed stretch, so high readings are rare, not average.</p>
 </section>
 
 <section>
-  <h2>What a gem is worth</h2>
-  <p class="lede">Published quality odds, and what they average out to. This is the table that makes the Blessing return computable.</p>
+  <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="5" y="1" width="2" height="1"/><rect x="3" y="2" width="6" height="1"/><rect x="1" y="3" width="10" height="2"/><rect x="2" y="5" width="8" height="1"/><rect x="3" y="6" width="6" height="1"/><rect x="4" y="7" width="4" height="1"/><rect x="5" y="8" width="2" height="1"/></svg>What a gem is worth</h2>
+  <p class="lede">Published odds and what they average out to.</p>
   <div class="panel">
     <table>
       <thead><tr><th>Cut</th><th>Chance</th><th class="bar"></th><th class="num">Share of value</th></tr></thead>
@@ -270,27 +273,27 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
       <tfoot><tr><td>Mean</td><td colspan="2">Expected multiplier on your buy-in</td><td class="num">1.76x</td></tr></tfoot>
     </table>
   </div>
-  <p class="note">A 1x cut is the single likeliest outcome at 45%, and four cuts in five land at 2x or below. Almost a third of a gem's average value sits in the 13x and 21x tails, which together show up once in every 67 gems.</p>
+  <p class="note">A 1x cut lands 45% of the time, four in five land at 2x or under, and the 13x/21x tails — one gem in 67 — hold nearly a third of the value.</p>
 </section>
 
 <section>
-  <h2>Does the model hold together</h2>
-  <p class="lede">A check worth doing on any economy model: add the parts back up and see whether they match what the designers said they were funding.</p>
+  <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="2" y="1" width="8" height="1"/><rect x="1" y="2" width="10" height="4"/><rect x="2" y="6" width="8" height="2"/><rect x="3" y="8" width="6" height="1"/><rect x="4" y="9" width="4" height="1"/><rect x="5" y="10" width="2" height="1"/></svg>Does the model hold together</h2>
+  <p class="lede">Do the funded shares actually add up to what the designers promised?</p>
   <div class="panel">
-    <p class="note" style="margin-top:0"><b>Blessings overshoot their funding.</b> A player who reaches Kilnbane every single run pulls 21.1c per key out of a pool fed 18c per key. That gap is paid for by every run that ends before floor 10. Set the clear-rate dial to <span id="beRate">85%</span> and the two numbers meet.</p>
-    <p class="note"><b>The Throne undershoots, then overshoots.</b> At the current $407 it returns 1.6c per key against 5c of funding. It reaches break-even at exactly $625, and everything above that is borrowed from the weeks nobody claimed it.</p>
-    <p class="note"><b>Add the designed shares and you get 93c.</b> The live model lands near that only by coincidence at small Throne pools, where the Blessing surplus and the Throne shortfall happen to cancel. Move either dial and they stop cancelling.</p>
+    <p class="note" style="margin-top:0"><b>Blessings overshoot their funding:</b> 21.1c comes out per key against 18c put in, a gap covered by every run that dies before floor 10 — balance sits at a <span id="beRate">85%</span> clear rate.</p>
+    <p class="note"><b>The Throne undershoots, then overshoots:</b> $407 returns 1.6c against 5c of funding, break-even lands at exactly $625.</p>
+    <p class="note"><b>Add the designed shares and you get 93c</b> — true only by coincidence, when the Blessing surplus cancels the Throne shortfall at small pools.</p>
   </div>
 </section>
 
 <section>
-  <h2>What this model cannot tell you</h2>
-  <p class="lede">Four gaps, left as gaps rather than filled with guesses.</p>
+  <h2><svg class="h2ico" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="3" y="1" width="6" height="2"/><rect x="7" y="3" width="2" height="2"/><rect x="5" y="5" width="2" height="2"/><rect x="5" y="9" width="2" height="2"/></svg>What this model cannot tell you</h2>
+  <p class="lede">Four gaps, left open rather than guessed.</p>
   <ul class="gaps">
-    <li><b>Whether the Weekly pool is seeded</b>The whitepaper does not say. DoM 1.0 launched with $5,000 placed into the Blessing Pool, so seeding is plausible, and it would change any attempt to read key sales out of the pool size.</li>
-    <li><b>What happens when the Blessing Pool runs thin</b>DoM 1.0 described a self-balancing mechanism. The 2.0 whitepaper drops that language and does not replace it, so the behaviour of a 21x cut against a shallow pool is undocumented.</li>
-    <li><b>The real clear rate</b>Nobody has published what share of key spend actually reaches floor 10. It is the single input this model most depends on, and the dial above is a guess until the team shares it.</li>
-    <li><b>Buba Caps</b>The Arcade header lists them alongside Treasure, Blessings and Raffle Tickets. The whitepaper's rewards page does not mention them at all.</li>
+    <li><b>Whether the Weekly pool is seeded</b>Unstated. DoM 1.0 seeded $5,000 once, so it's plausible — and would skew any pool-size read on sales.</li>
+    <li><b>What happens when the Blessing Pool runs thin</b>DoM 1.0 had a fix; 2.0 drops it unreplaced, leaving a 21x cut against a shallow pool undocumented.</li>
+    <li><b>The real clear rate</b>Unpublished, though it's the model's most critical input — the dial above is a guess until the team shares it.</li>
+    <li><b>Buba Caps</b>Listed in the Arcade header with Treasure, Blessings, and Raffle Tickets — absent from the whitepaper's rewards page.</li>
   </ul>
 </section>
 
@@ -300,7 +303,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     blessing = clear_rate x 0.12 x 1.76<br>
     throne&nbsp;&nbsp; = min(1, clear_rate x floor(pool/250) x 0.00005 x keys) x 0.80 x pool
   </p>
-  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">Axie: Den of Mysteries whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a>. Nothing here is affiliated with Onchain Heroes or Sky Mavis, and none of it is financial advice. Default pool values were read from the game on 16 September 2026. DoM 1.0 numbers are not interchangeable with these.</p>
+  <p style="margin-top:20px">Every figure traces to the <a href="https://bit.ly/AxieDoM-whitepaper">whitepaper</a> and the <a href="https://blog.axieinfinity.com/p/axie-den-of-mysteries-20-is-live">2.0 launch post</a> — not affiliated with Onchain Heroes or Sky Mavis, not financial advice. Read from the game on 16 September 2026; DoM 1.0 numbers don't carry over.</p>
 </footer>
 
 </div>
@@ -469,7 +472,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
     for(j=0;j<series.length;j++){
       d += (j?"L":"M") + X(series[j].p).toFixed(1) + " " + Y(series[j].v).toFixed(1);
     }
-    svg.appendChild(node("path",{d:d,fill:"none",stroke:"#5BE9C0","stroke-width":2}));
+    svg.appendChild(node("path",{d:d,fill:"none",stroke:"#5BE9C0","stroke-width":3}));
 
     // threshold
     svg.appendChild(node("line",{x1:X(250),y1:T,x2:X(250),y2:B,stroke:"#243b30","stroke-width":1}));
@@ -509,7 +512,7 @@ a:focus-visible{outline:2px solid var(--focus); outline-offset:3px}
       throneI=el("throne"), throne2I=el("throne2"), weeklyI=el("weekly");
 
   function syncThrone(v){
-    var n = Math.max(0, Math.min(200000, Math.round(v) || 0));
+    var n = Math.max(0, Math.min(6000, Math.round(v) || 0));
     throneI.value = n;
     throne2I.value = Math.min(6000, n);
     return n;
